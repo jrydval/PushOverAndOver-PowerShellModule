@@ -158,13 +158,18 @@ function Send-PushoverNotification {
     $attrs = $PSCmdlet.MyInvocation.BoundParameters
 
 
-    if( $User -and $ApiToken ) {
+    if ( $User -and $ApiToken ) {
         $attrs.Add("User", $User)
         $attrs.Add("Token", $ApiToken)
-    } elseif( Test-Path -Path $PushoverCredentials ) {
+    }
+    elseif ( Test-Path -Path $PushoverCredentials ) {
         $cred = Import-Clixml -Path $PushoverCredentials
         $attrs.Add("User", $cred.UserName)
         $attrs.Add("Token", ($cred.Password | ConvertFrom-SecureString -AsPlainText) )
+    }
+    else {
+        Write-Error "User and ApiToken missing - add then as parameters or run Set-PushoverCredentials cmdlet"
+        return
     }
 
     if ($attrs.Priority) { $attrs.Priority = [int]$attrs.Priority }
@@ -218,7 +223,7 @@ function Set-PushoverCredentials {
         $Force = $false
     )
 
-    if( ( Test-Path -Path $PushoverCredentials) -and -not ($Force) ) {
+    if ( ( Test-Path -Path $PushoverCredentials) -and -not ($Force) ) {
         Write-Error "Pushover credentials file $PushoverCredentials alredy exists, use -Force if you want to re-create the file"
         return
     }
