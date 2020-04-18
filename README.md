@@ -41,6 +41,15 @@ Function `Send-PushoverNotification` supports all the optional arguments:
 - -Device name - device the notification should be delivered to instead of to all devices
 - -Callback - URL which will be 'called' when notification is confirmed
 
+You can also send Glances instead of Notifications. They are delivered to your smart watches, not to your phone or computer.
+
+- -Glance - switch
+- -Title 'Title'
+- -Text 'A text'
+- -Subtext 'Something even smaller'
+- -Count [number]
+- -Percent [number]
+
 If the notification is sent, it returns:
 
 ```
