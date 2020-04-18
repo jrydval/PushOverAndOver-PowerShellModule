@@ -150,7 +150,7 @@ function Send-PushoverNotification {
         Write-Debug "Reading credentials from file $PushoverCredentials"
     }
     else {
-        Write-Error "User and ApiToken parameters are missing - add then as parameters or run Set-PushoverCredentials cmdlet to persistently store them."
+        Write-Error "User and/or ApiToken parameters are missing - add them as parameters or run Set-PushoverCredentials function to persistently store them."
         return
     }
 
@@ -208,7 +208,7 @@ function Send-PushoverNotification {
     } 
 
     if ($PSCmdlet.ShouldProcess($attrs.Message, "Sending notification using Pushover service")) {
-        Invoke-WebRequest -Uri $url -Method Post -Body $body
+        Invoke-RestMethod -Uri $url -Method Post -Body $body
     }
 }
 

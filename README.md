@@ -24,6 +24,7 @@ Send-PushoverNotification -Message 'Notify me from PowerShell' -User u... -ApiTo
 ``
 
 Or use also optional parameters:
+
 ``
 Send-PushoverNotification -Message 'Notify me from PowerShell' -Title 'Power Shell' -Priority HighPriorityAndConfirmation -Retry 30 -Expire 60 -Timestamp (Get-Date -Date '01/01/2000') -Sound Bike -Device iphone -Attachment ./test/image.jpg
 ``
@@ -39,6 +40,16 @@ Function ``Send-PushoverNotification`` supports all the optional arguments:
 - -Sound [None, Alien, Bike, ...] - name of the notification sound, autocompletion supported
 - -Device name - device the notification should be delivered to instead of to all devices
 - -Callback - URL which will be 'called' when notification is confirmed
+
+If the notification is sent, it returns:
+
+``
+status request
+------ -------
+     1 588846f5-6b05-4a52-b243-8cbc0d5de5c4
+``
+
+If not and exception is thrown.
 
 ## Disclaimer
 
