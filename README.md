@@ -26,7 +26,13 @@ Send-PushoverNotification -Message 'Notify me from PowerShell' -User u... -ApiTo
 Or use also optional parameters:
 
 ```
-Send-PushoverNotification -Message 'Notify me from PowerShell' -Title 'Power Shell' -Priority HighPriorityAndConfirmation -Retry 30 -Expire 60 -Timestamp (Get-Date -Date '01/01/2000') -Sound Bike -Device iphone -Attachment ./test/image.jpg
+Send-PushoverNotification -Message 'Notify me from PowerShell' `
+-Title 'Power Shell' `
+-Priority HighPriorityAndConfirmation `
+-Retry 30 -Expire 60 -Timestamp (Get-Date -Date '01/01/2000') `
+-Sound Bike `
+-Device iphone `
+-Attachment ./test/image.jpg
 ```
 
 Function `Send-PushoverNotification` supports all the optional arguments:
