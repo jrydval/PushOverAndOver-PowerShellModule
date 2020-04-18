@@ -49,7 +49,7 @@ status request
      1 588846f5-6b05-4a52-b243-8cbc0d5de5c4
 ```
 
-If not and exception is thrown.
+If not an exception is thrown.
 
 ## Disclaimer
 
