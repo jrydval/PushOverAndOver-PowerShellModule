@@ -1,6 +1,6 @@
 ## What is it?
 
-Small and light module for sending notifications using Pushover service
+Small and light module for sending notifications using Pushover service from PowerShell scripts.
 
 ## Usage
 
