@@ -51,7 +51,8 @@ function Send-PushoverNotification {
         [Io.FileInfo]
         $CredentialsPath,  
 
-        [Parameter(Mandatory = $true,
+        [Parameter(
+            Mandatory = $false,
             Position = 0,
             ValueFromPipeline = $true,
             ValueFromPipelineByPropertyName = $true,
@@ -60,73 +61,113 @@ function Send-PushoverNotification {
         [string]
         $Message,
 
-        [Parameter(Mandatory = $false,
+        [Parameter(
+            Mandatory = $false,
             Position = 1,
             ValueFromPipelineByPropertyName = $true,
             HelpMessage = "Title for your message")]
         [string]
         $Title,
 
-        [Parameter(Mandatory = $false,
+        [Parameter(
+            Mandatory = $false,
             ValueFromPipelineByPropertyName = $true,
             HelpMessage = "Url which will be sent with the message")]
         [ValidateNotNullOrEmpty()]
         [uri]
         $Url,
 
-        [Parameter(Mandatory = $false,
+        [Parameter(
+            Mandatory = $false,
             ValueFromPipelineByPropertyName = $true,
             HelpMessage = "Title for your message")]
         [string]
         $UrlTitle,
 
-        [Parameter(Mandatory = $false,
+        [Parameter(
+            Mandatory = $false,
             ValueFromPipelineByPropertyName = $true,
             HelpMessage = "Device to deliver your notification to")]
         [string]
         $Device,
 
-        [Parameter(Mandatory = $false,
+        [Parameter(
+            Mandatory = $false,
             ValueFromPipelineByPropertyName = $true,
             HelpMessage = "Attached image file")]
         [Io.FileInfo]
         $Attachment,
 
-        [Parameter(Mandatory = $false,
+        [Parameter(
+            Mandatory = $false,
             ValueFromPipelineByPropertyName = $true,
             HelpMessage = "Sound to play")]
         [PushoverSound]
         $Sound,
 
-        [Parameter(Mandatory = $false,
+        [Parameter(
+            Mandatory = $false,
             ValueFromPipelineByPropertyName = $true,
             HelpMessage = "Notification priority")]
         [PushoverPriority]
         $Priority,
 
-        [Parameter(Mandatory = $false,
+        [Parameter(
+            Mandatory = $false,
             ValueFromPipelineByPropertyName = $true,
             HelpMessage = "Timestamp for your message")]
         [datetime]
         $Timestamp,
 
-        [Parameter(Mandatory = $false,
+        [Parameter(
+            Mandatory = $false,
             ValueFromPipelineByPropertyName = $true,
             HelpMessage = "Retry interval is seconds for HighPriorityAndConfirmation notifications")]
         [int]
         $Retry,
 
-        [Parameter(Mandatory = $false,
+        [Parameter(
+            Mandatory = $false,
             ValueFromPipelineByPropertyName = $true,
             HelpMessage = "How many seconds your notification will continue to be retried")]
         [int]
         $Expire,
 
-        [Parameter(Mandatory = $false,
+        [Parameter(
+            Mandatory = $false,
             ValueFromPipelineByPropertyName = $true,
             HelpMessage = "Notification confirmation callback URL")]
         [uri]
-        $Callback
+        $Callback,
+
+        [Parameter(
+            Mandatory = $false,
+            ValueFromPipelineByPropertyName = $true)]
+        [switch]
+        $Glance = $false,
+
+        [Parameter(
+            Mandatory = $false,
+            ValueFromPipelineByPropertyName = $true)]
+        [string]
+        $Text,
+
+        [Parameter(
+            Mandatory = $false,
+            ValueFromPipelineByPropertyName = $true)]
+        [int]
+        $Count,
+
+        [Parameter(
+            Mandatory = $false,
+            ValueFromPipelineByPropertyName = $true)]
+        [int]
+        $Percent,
+
+        [Parameter(Mandatory = $false,
+            ValueFromPipelineByPropertyName = $true)]
+        [string]
+        $Subtext
 
     )
 
@@ -141,7 +182,7 @@ function Send-PushoverNotification {
         $cred = Import-Clixml -Path $CredentialsPath
         $attrs.Add("User", $cred.UserName)
         $attrs.Add("Token", ($cred.Password | ConvertFrom-SecureString -AsPlainText) )
-                Write-Debug "Reading credentials from file $CredentialsPath"
+        Write-Debug "Reading credentials from file $CredentialsPath"
     }
     elseif ( Test-Path -Path $PushoverCredentials ) {
         $cred = Import-Clixml -Path $PushoverCredentials
@@ -155,7 +196,8 @@ function Send-PushoverNotification {
     }
 
     $body = [System.Net.Http.MultipartFormDataContent]::new()
-    $url = "http://api.pushover.net/1/messages.json"
+    
+    $url = $Glance ? 'https://api.pushover.net/1/glances.json' : 'http://api.pushover.net/1/messages.json'
 
     if ($Attachment) {
         $fileStream = [System.IO.FileStream]::new($Attachment.FullName, [System.IO.FileMode]::Open)
@@ -182,6 +224,10 @@ function Send-PushoverNotification {
         Expire    = "expire"
         Retry     = "retry"
         Callback  = "callback"
+        Text      = "text"
+        Subtext   = "subtext"
+        Count     = "count"
+        Percent   = "percent"
     }
 
 
