@@ -34,6 +34,27 @@ enum PushoverPriority {
 
 $PushoverCredentials = "./.pushover.cred"
 function Send-PushoverNotification {
+    <#
+    .SYNOPSIS
+    Function for sending notifications via Pushover service.
+    See https://pushover.net/
+
+    .DESCRIPTION
+    You can send Notification or Glance. 
+    Notification is displayed as a popup or in notification area on your device. 
+    Glance is displayed on small displays like Apple Watch without sound or vibration.
+
+    .PARAMETER User
+    Pushover user name, usually starts with "u".
+
+    .PARAMETER ApiToken
+    Pushover API token generated when creating an application, usually starts with "a".
+
+    .PARAMETER Glance
+    Switch indicating that a glance will be sent instead of ordinary notification. The glance is displayed on small devices like smart watches.
+#>
+
+
     [CmdletBinding(SupportsShouldProcess = $true)] 
     Param(
         [Parameter(Mandatory = $false)]
@@ -52,11 +73,12 @@ function Send-PushoverNotification {
         $CredentialsPath,  
 
         [Parameter(
-            Mandatory = $false,
+            Mandatory = $true,
             Position = 0,
             ValueFromPipeline = $true,
             ValueFromPipelineByPropertyName = $true,
-            HelpMessage = "Message to be sent")]
+            HelpMessage = "Message to be sent",
+            ParameterSetName = "Notification")]
         [ValidateNotNullOrEmpty()]
         [string]
         $Message,
@@ -65,14 +87,16 @@ function Send-PushoverNotification {
             Mandatory = $false,
             Position = 1,
             ValueFromPipelineByPropertyName = $true,
-            HelpMessage = "Title for your message")]
+            HelpMessage = "Title for your message",
+            ParameterSetName = "Notification")]
         [string]
         $Title,
 
         [Parameter(
             Mandatory = $false,
             ValueFromPipelineByPropertyName = $true,
-            HelpMessage = "Url which will be sent with the message")]
+            HelpMessage = "Url which will be sent with the message",
+            ParameterSetName = "Notification")]
         [ValidateNotNullOrEmpty()]
         [uri]
         $Url,
@@ -80,7 +104,8 @@ function Send-PushoverNotification {
         [Parameter(
             Mandatory = $false,
             ValueFromPipelineByPropertyName = $true,
-            HelpMessage = "Title for your message")]
+            HelpMessage = "Title for your message",
+            ParameterSetName = "Notification")]
         [string]
         $UrlTitle,
 
@@ -94,80 +119,94 @@ function Send-PushoverNotification {
         [Parameter(
             Mandatory = $false,
             ValueFromPipelineByPropertyName = $true,
-            HelpMessage = "Attached image file")]
+            HelpMessage = "Attached image file",
+            ParameterSetName = "Notification")]
         [Io.FileInfo]
         $Attachment,
 
         [Parameter(
             Mandatory = $false,
             ValueFromPipelineByPropertyName = $true,
-            HelpMessage = "Sound to play")]
+            HelpMessage = "Sound to play",
+            ParameterSetName = "Notification")]
         [PushoverSound]
         $Sound,
 
         [Parameter(
             Mandatory = $false,
             ValueFromPipelineByPropertyName = $true,
-            HelpMessage = "Notification priority")]
+            HelpMessage = "Notification priority",
+            ParameterSetName = "Notification")]
         [PushoverPriority]
         $Priority,
 
         [Parameter(
             Mandatory = $false,
             ValueFromPipelineByPropertyName = $true,
-            HelpMessage = "Timestamp for your message")]
+            HelpMessage = "Timestamp for your message",
+            ParameterSetName = "Notification")]
         [datetime]
         $Timestamp,
 
         [Parameter(
             Mandatory = $false,
             ValueFromPipelineByPropertyName = $true,
-            HelpMessage = "Retry interval is seconds for HighPriorityAndConfirmation notifications")]
+            HelpMessage = "Retry interval is seconds for HighPriorityAndConfirmation notifications",
+            ParameterSetName = "Notification")]
         [int]
         $Retry,
 
         [Parameter(
             Mandatory = $false,
             ValueFromPipelineByPropertyName = $true,
-            HelpMessage = "How many seconds your notification will continue to be retried")]
+            HelpMessage = "How many seconds your notification will continue to be retried",
+            ParameterSetName = "Notification")]
         [int]
         $Expire,
 
         [Parameter(
             Mandatory = $false,
             ValueFromPipelineByPropertyName = $true,
-            HelpMessage = "Notification confirmation callback URL")]
+            HelpMessage = "Notification confirmation callback URL",
+            ParameterSetName = "Notification")]
         [uri]
         $Callback,
 
         [Parameter(
-            Mandatory = $false,
-            ValueFromPipelineByPropertyName = $true)]
+            Mandatory = $true,
+            ValueFromPipelineByPropertyName = $true,
+            ParameterSetName = "Glance")]
         [switch]
         $Glance = $false,
 
         [Parameter(
             Mandatory = $false,
-            ValueFromPipelineByPropertyName = $true)]
+            ValueFromPipelineByPropertyName = $true,
+            ParameterSetName = "Glance")]
         [string]
         $Text,
 
+        [Parameter(Mandatory = $false,
+            ValueFromPipelineByPropertyName = $true,
+            ParameterSetName = "Glance")]
+        [string]
+        $Subtext,
+
         [Parameter(
             Mandatory = $false,
-            ValueFromPipelineByPropertyName = $true)]
+            ValueFromPipelineByPropertyName = $true,
+            ParameterSetName = "Glance")]
         [int]
         $Count,
 
         [Parameter(
             Mandatory = $false,
-            ValueFromPipelineByPropertyName = $true)]
+            ValueFromPipelineByPropertyName = $true,
+            ParameterSetName = "Glance")]
         [int]
-        $Percent,
+        $Percent
 
-        [Parameter(Mandatory = $false,
-            ValueFromPipelineByPropertyName = $true)]
-        [string]
-        $Subtext
+
 
     )
 
