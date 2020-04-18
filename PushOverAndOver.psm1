@@ -46,6 +46,11 @@ function Send-PushoverNotification {
         [string]
         $ApiToken,
 
+        [Parameter(Mandatory = $false)]
+        [ValidateNotNullOrEmpty()]
+        [Io.FileInfo]
+        $CredentialsPath,  
+
         [Parameter(Mandatory = $true,
             Position = 0,
             ValueFromPipeline = $true,
@@ -125,6 +130,30 @@ function Send-PushoverNotification {
 
     )
 
+    $attrs = $PSCmdlet.MyInvocation.BoundParameters
+
+    if ( $User -and $ApiToken ) {
+        $attrs.Add("User", $User)
+        $attrs.Add("Token", $ApiToken)
+        Write-Debug "Setting credentials from parameters"
+    }
+    elseif ( $CredentialsPath -and (Test-Path -PathType Leaf -Path $CredentialsPath) ) { 
+        $cred = Import-Clixml -Path $CredentialsPath
+        $attrs.Add("User", $cred.UserName)
+        $attrs.Add("Token", ($cred.Password | ConvertFrom-SecureString -AsPlainText) )
+                Write-Debug "Reading credentials from file $CredentialsPath"
+    }
+    elseif ( Test-Path -Path $PushoverCredentials ) {
+        $cred = Import-Clixml -Path $PushoverCredentials
+        $attrs.Add("User", $cred.UserName)
+        $attrs.Add("Token", ($cred.Password | ConvertFrom-SecureString -AsPlainText) )
+        Write-Debug "Reading credentials from file $PushoverCredentials"
+    }
+    else {
+        Write-Error "User and ApiToken parameters are missing - add then as parameters or run Set-PushoverCredentials cmdlet to persistently store them."
+        return
+    }
+
     $body = [System.Net.Http.MultipartFormDataContent]::new()
     $url = "http://api.pushover.net/1/messages.json"
 
@@ -155,22 +184,7 @@ function Send-PushoverNotification {
         Callback  = "callback"
     }
 
-    $attrs = $PSCmdlet.MyInvocation.BoundParameters
 
-
-    if ( $User -and $ApiToken ) {
-        $attrs.Add("User", $User)
-        $attrs.Add("Token", $ApiToken)
-    }
-    elseif ( Test-Path -Path $PushoverCredentials ) {
-        $cred = Import-Clixml -Path $PushoverCredentials
-        $attrs.Add("User", $cred.UserName)
-        $attrs.Add("Token", ($cred.Password | ConvertFrom-SecureString -AsPlainText) )
-    }
-    else {
-        Write-Error "User and ApiToken missing - add then as parameters or run Set-PushoverCredentials cmdlet"
-        return
-    }
 
     if ($attrs.Priority) { $attrs.Priority = [int]$attrs.Priority }
     if ($attrs.Sound) { $attrs.Sound = ([string]$attrs.Sound).toLower() }
