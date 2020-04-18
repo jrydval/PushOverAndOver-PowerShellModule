@@ -23,17 +23,22 @@ Or specify credentials every time you call the ``Send-PushoverNotification``.
 Send-PushoverNotification -Message 'Notify me from PowerShell' -User u... -ApiToken a...
 ``
 
+Or use also optional parameters:
+``
+Send-PushoverNotification -Message 'Notify me from PowerShell' -Title 'Power Shell' -Priority HighPriorityAndConfirmation -Retry 30 -Expire 60 -Timestamp (Get-Date -Date '01/01/2000') -Sound Bike -Device iphone -Attachment ./test/image.jpg
+``
+
 Function ``Send-PushoverNotification`` supports all the optional arguments:
-- Attachment filename.jpg
-- Url http://somewhere.net/
-- UrlTitle 'Link somewhere'
-- Priority [NoAlert, Quite, Normal, HighPriority, HighPriorityAndConfirmation] 
-- Retry x - Retry interval is seconds for HighPriorityAndConfirmation notifications
-- Expire x - How many seconds your notification will continue to be retried for HighPriorityAndConfirmation notifications
-- Timestamp (Get-Date -Date '01/01/2000') - Timestamp when different from sending time
-- Sound [None, Alien, Bike, ...] - name of the notification sound, autocompletion supported
-- Device name - device the notification should be delivered to instead of to all devices
-- Callback - URL which will be 'called' when notification is confirmed
+- -Attachment filename.jpg
+- -Url http://somewhere.net/
+- -UrlTitle 'Link somewhere'
+- -Priority [NoAlert, Quite, Normal, HighPriority, HighPriorityAndConfirmation] 
+- -Retry x - Retry interval is seconds for HighPriorityAndConfirmation notifications
+- -Expire x - How many seconds your notification will continue to be retried for HighPriorityAndConfirmation notifications
+- -Timestamp (Get-Date -Date '01/01/2000') - Timestamp when different from sending time
+- -Sound [None, Alien, Bike, ...] - name of the notification sound, autocompletion supported
+- -Device name - device the notification should be delivered to instead of to all devices
+- -Callback - URL which will be 'called' when notification is confirmed
 
 ## Disclaimer
 
