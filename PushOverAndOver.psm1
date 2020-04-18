@@ -87,8 +87,7 @@ function Send-PushoverNotification {
             Mandatory = $false,
             Position = 1,
             ValueFromPipelineByPropertyName = $true,
-            HelpMessage = "Title for your message",
-            ParameterSetName = "Notification")]
+            HelpMessage = "Title for your message")]
         [string]
         $Title,
 
